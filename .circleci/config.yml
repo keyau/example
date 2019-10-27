@@ -37,23 +37,28 @@ jobs:
       - run:
           name: End to End Test
           command: npm run e2e
-  tag:
+  package:
     machine: true
     steps:
       - checkout
-      # build and push Docker image
-      - run: |
+      - environment:
           TAG=0.1.$CIRCLE_BUILD_NUM
-          docker build -f Dockerfile-prod -t example:$TAG .     
-          docker login docker.pkg.github.com -u $DOCKER_USER -p $DOCKER_PASS
-          docker tag example:$TAG docker.pkg.github.com/keyau/example/example:$TAG
-          docker push docker.pkg.github.com/keyau/example/example:$TAG
+      # build and push Docker image
+      - run: 
+          name: Build image
+          command: docker build -f Dockerfile-prod -t example:$TAG .
+      - run: 
+          name: Tag & push image
+          command: |   
+            docker login docker.pkg.github.com -u $DOCKER_USER -p $DOCKER_PASS
+            docker tag example:$TAG docker.pkg.github.com/keyau/example/example:$TAG
+            docker push docker.pkg.github.com/keyau/example/example:$TAG
 workflows:
   version: 2
   my_workflow:
     jobs:
       - build
-      - tag:
+      - package:
           requires:
             - build
           filters:  # using regex filters requires the entire branch to match
