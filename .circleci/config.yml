@@ -45,7 +45,7 @@ jobs:
       - run: |
           TAG=0.1.$CIRCLE_BUILD_NUM
           docker build -f Dockerfile-prod -t example:$TAG .     
-          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker login docker.pkg.github.com -u $DOCKER_USER -p $DOCKER_PASS
           docker tag example:$TAG docker.pkg.github.com/keyau/example/example:$TAG
           docker push docker.pkg.github.com/keyau/example/example:$TAG
 workflows:
