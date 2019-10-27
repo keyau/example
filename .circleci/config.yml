@@ -4,7 +4,6 @@ jobs:
     working_directory: ~/example
     docker:
       - image: circleci/node:12-browsers
-
     steps:
       # Checkout the code from the branch into the working_directory
       - checkout
@@ -38,3 +37,26 @@ jobs:
       - run:
           name: End to End Test
           command: npm run e2e
+  tag:
+    machine: true
+    steps:
+      - checkout
+      # build and push Docker image
+      - run: |
+          TAG=0.1.$CIRCLE_BUILD_NUM
+          docker build -f Dockerfile-prod -t example:$TAG .     
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker tag example:$TAG docker.pkg.github.com/keyau/example/example:$TAG
+          docker push docker.pkg.github.com/keyau/example/example:$TAG
+workflows:
+  version: 2
+  my_workflow:
+    jobs:
+      - build
+      - tag:
+          requires:
+            - build
+          filters:  # using regex filters requires the entire branch to match
+            branches:
+              only:  # only branches matching the below regex filters will run
+                - master
