@@ -51,9 +51,12 @@ jobs:
       - run: 
           name: Tag & push image
           command: |   
-            docker login docker.pkg.github.com -u $DOCKER_USER -p $DOCKER_PASS
-            docker tag example:$TAG docker.pkg.github.com/keyau/example/example:$TAG
-            docker push docker.pkg.github.com/keyau/example/example:$TAG
+            #docker login docker.pkg.github.com -u $DOCKER_USER -p $DOCKER_PASS
+            #docker tag example:$TAG docker.pkg.github.com/keyau/example/example:$TAG
+            #docker push docker.pkg.github.com/keyau/example/example:$TAG
+            docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
+            docker tag example:$TAG keyau/keyau-repo:$TAG
+            docker push keyau/keyau-repo:$TAG
 workflows:
   version: 2
   my_workflow:
