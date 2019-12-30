@@ -59,8 +59,8 @@ jobs:
             #docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
             #docker tag example:$TAG keyau/example:$TAG
             #docker push keyau/example:$TAG
-      - ecr-login
-      - push-image:
+      - aws-ecr/ecr-login
+      - aws-ecr/push-image:
           account-url: 603058786090.dkr.ecr.eu-west-1.amazonaws.com
           repo: keyau
           tag: $TAG
