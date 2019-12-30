@@ -47,23 +47,28 @@ jobs:
           name: Define environment variable at runtime
           command: echo 'export TAG=0.1.$CIRCLE_BUILD_NUM' >> $BASH_ENV
       # build and push Docker image
-      - run: 
-          name: Build image
-          command: docker build -f Dockerfile-prod -t example:$TAG .
-      - run: 
-          name: Tag & push image
-          command: |   
-            #docker login docker.pkg.github.com -u $DOCKER_USER -p $DOCKER_PASS
-            #docker tag example:$TAG docker.pkg.github.com/keyau/example/example:$TAG
-            #docker push docker.pkg.github.com/keyau/example/example:$TAG
-            #docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
-            #docker tag example:$TAG keyau/example:$TAG
-            #docker push keyau/example:$TAG
+      # - run: 
+      #     name: Build image
+      #     command: docker build -f Dockerfile-prod -t example:$TAG .
+      # - run: 
+      #     name: Tag & push image
+      #     command: |   
+      #       #docker login docker.pkg.github.com -u $DOCKER_USER -p $DOCKER_PASS
+      #       #docker tag example:$TAG docker.pkg.github.com/keyau/example/example:$TAG
+      #       #docker push docker.pkg.github.com/keyau/example/example:$TAG
+      #       #docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
+      #       #docker tag example:$TAG keyau/example:$TAG
+      #       #docker push keyau/example:$TAG
       - aws-ecr/ecr-login
+      - aws-ecr/build-image:
+          account-url: AWS_ECR_ACCOUNT_URL
+          dockerfile: Dockerfile-prod
+          repo: example
+          tag: $TAG
       - aws-ecr/push-image:
           account-url: AWS_ECR_ACCOUNT_URL
-          repo: keyau
-          tag: TAG
+          repo: example
+          tag: $TAG
 workflows:
   version: 2
   my_workflow:
